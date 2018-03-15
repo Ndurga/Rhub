@@ -1,80 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:textSize="20sp"
-            android:text="UserName* :"/>
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:id="@+id/etUName"
-            android:textSize="20sp"
-            android:hint="Enter User Name"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:textSize="20sp"
-            android:text="Password*  :"/>
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:id="@+id/etPwdLogin"
-            android:textSize="20sp"
-            android:hint="Enter Password"
-            android:inputType="textPassword"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:hint="Enter phone number"
+        android:inputType="phone"
+        android:id="@+id/user_loin_id"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        android:id="@+id/user_password_id"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/message_id"
+        android:textColor="@android:color/holo_red_light"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:id="@+id/login"/>
 
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bRegister"
-            android:textSize="10dp"
             android:text="Register"
-            android:onClick="registerUser"/>
+            android:id="@+id/register"    />
+
         <Button
-            android:layout_width="0dp"
-            android:layout_weight="0.3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bLogin"
-            android:textSize="10dp"
-            android:text="Login"
-            android:onClick="loginUser"/>
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="0.4"
-            android:layout_height="wrap_content"
-            android:id="@+id/bForgotPwd"
-            android:textSize="10dp"
             android:text="Forgot Password"
-            android:onClick="forgotPwdUser"/>
+            android:id="@+id/forgot_passwd"    />
+
     </LinearLayout>
 
 </LinearLayout>

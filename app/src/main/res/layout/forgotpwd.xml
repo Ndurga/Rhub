@@ -12,14 +12,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:textSize="15sp"
-            android:text="Email or Phone*:"/>
+            android:text="Phone* :"/>
         <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:id="@+id/etEmailOrPhone"
-            android:textSize="20sp"
-            android:hint="Enter Email or Phone"/>
+            android:id="@+id/forgotPw_etPhone"
+            android:inputType="text"/>
     </LinearLayout>
 
     <Button
@@ -43,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:id="@+id/etOtp"
+            android:id="@+id/forgotPw_etOtp"
             android:textSize="20sp"
             android:hint="Enter OTP"/>
     </LinearLayout>

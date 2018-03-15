@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:id="@+id/etPwd"
+            android:id="@+id/reg_etPwd"
             android:textSize="20sp"
             android:hint="Enter User Name"
             android:inputType="textPassword"/>
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:id="@+id/etRePwd"
+            android:id="@+id/reg_etRePwd"
             android:textSize="20sp"
             android:hint="Enter User Name"
             android:inputType="textPassword"/>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home" />
+        <item
+            android:id="@+id/nav_activity"
+            android:icon="@drawable/ic_person_outline_black_24dp"
+            android:title="My Profile" />
+    </group>
+
+    <item android:title="Add/Search Property">
+        <menu>
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_addcustomer"
+                android:icon="@drawable/ic_person_add_black_24dp"
+                android:title="Add Customer" />
+            <item
+                android:id="@+id/nav_manage"
+                android:icon="@drawable/ic_school_black_24dp"
+                android:title="Projects" />
+            </group>
+
+        </menu>
+    </item>
+
+    <item android:title="We Listen">
+        <menu>
+            <group android:checkableBehavior="single">
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+            <item
+                android:id="@+id/nav_feedback"
+                android:icon="@drawable/ic_feedback_black_24dp"
+                android:title="feedback" />
+            <item
+                android:id="@+id/nav_login"
+                android:icon="@drawable/ic_logout"
+                android:title="Login" />
+            </group>
+        </menu>
+    </item>
+
+</menu>

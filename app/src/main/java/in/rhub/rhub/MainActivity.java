@@ -1,158 +1,184 @@
 package in.rhub.rhub;
 
-import android.app.Fragment;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import static in.rhub.rhub.Configuration.MyPREFERENCES;
+import static in.rhub.rhub.Configuration.menuItemLoginGlobal;
+import static in.rhub.rhub.Configuration.navigationUserNameGlobal;
+import static in.rhub.rhub.Configuration.passWord;
+import static in.rhub.rhub.Configuration.sharedpreferences;
+import static in.rhub.rhub.Configuration.userName;
+import static in.rhub.rhub.Configuration.userPhoneNumberGlobal;
 
-    EditText m_etName,m_etPwd,m_etRePwd,m_etEmail, m_etPhone, m_etUNameLogin, m_etPwdLogin;
-    SQLiteDatabase dBase;
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-    public void callFragment(Fragment fmt){
-        FragmentManager fManager = getFragmentManager();
-        FragmentTransaction tx = fManager.beginTransaction();
-        tx.replace(R.id.frag1,fmt);
-        tx.addToBackStack("");
-        tx.commit();
-    }
-
-    public void createDB() {
-        dBase=openOrCreateDatabase("RHub",MODE_PRIVATE,null);
-        dBase.execSQL("create table  if not exists tCustomer(id_phone number,name varchar(100),email varchar(100),password varchar(100), repassword varchar(100))");
-    }
-
+    ImageView listImageview;
+    EditText searchbox;
+    String sfUname,sfPwd;
+    Menu myMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        invalidateOptionsMenu();
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
-        callFragment(new LoginFragment());
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        //#satish - start
+        invalidateOptionsMenu();
+        if(myMenu != null)
+            menuItemLoginGlobal = myMenu.findItem(R.id.nav_login);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View headerView = navigationView.getHeaderView(0);
+        navigationUserNameGlobal = (TextView) headerView.findViewById(R.id.nav_header_user);
+
+
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+        sfUname = sharedpreferences.getString(userName, null);
+        sfPwd   = sharedpreferences.getString(passWord,null);
+
+        if( (sfUname != null) && (sfPwd != null) ) {
+            userPhoneNumberGlobal = sfUname;
+            navigationUserNameGlobal.setText(userPhoneNumberGlobal);
+            if(menuItemLoginGlobal != null){
+                menuItemLoginGlobal.setTitle("Logout");
+            }
+            getFragmentManager().beginTransaction().replace(R.id.frag, new HomeFragment()).commit();
+        }else{
+            getFragmentManager().beginTransaction().replace(R.id.frag, new LoginFragment()).commit();
+        }
+
+        //My Code Start
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(Intent.ACTION_CALL);
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Toast.makeText(MainActivity.this,intent.getAction(),Toast.LENGTH_SHORT).show();
+            }
+        },filter);
+        //#satish - end
+
 
     }
 
-
-    public void registerUser(View v){
-        callFragment(new RegisterUserFragment());
-    }
-
-    public void submitRegisterData(View v){
-
-        m_etName  = findViewById(R.id.etName);
-        m_etEmail = findViewById(R.id.etEmail);
-        m_etPhone = findViewById(R.id.etPhone);
-        m_etPwd   = findViewById(R.id.etPwd);
-        m_etRePwd = findViewById(R.id.etRePwd);
-
-        if((!m_etName.getText().toString().isEmpty())  &&
-                (!m_etEmail.getText().toString().isEmpty()) &&
-                (!m_etPhone.getText().toString().isEmpty()) &&
-                (!m_etPwd.getText().toString().isEmpty()) &&
-                (!m_etRePwd.getText().toString().isEmpty())) {
-            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(m_etEmail.getText().toString()).matches()){
-                Toast.makeText(this, "Enter Valid Email", Toast.LENGTH_SHORT).show();
-            }
-            else if(!android.util.Patterns.PHONE.matcher(m_etPhone.getText().toString()).matches()){
-                Toast.makeText(this,"Enter Valid Phone", Toast.LENGTH_SHORT).show();
-            }
-            else if(!m_etPwd.getText().toString().equals(m_etRePwd.getText().toString())){
-                Toast.makeText(this,"Passwords are Mismatch", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                //DB Logic needs to be implement
-                createDB();
-                ContentValues cv=new ContentValues();
-                cv.put("id_phone",Integer.parseInt(m_etPhone.getText().toString()));
-                cv.put("name",m_etName.getText().toString());
-                cv.put("email",m_etEmail.getText().toString());
-                cv.put("password",m_etPwd.getText().toString());
-                cv.put("repassword",m_etRePwd.getText().toString());
-                long status=dBase.insert("tCustomer",null,cv);
-                if(status!=-1){
-                    Toast.makeText(this,"Record Inserted Successfully",
-                            Toast.LENGTH_LONG).show();
-                    m_etPhone.setText("");
-                    m_etName.setText("");
-                    m_etEmail.setText("");
-                    m_etPwd.setText("");
-                    m_etRePwd.setText("");
-                }else{
-                    Toast.makeText(this,"Record Insertion Failed",
-                            Toast.LENGTH_LONG).show();
-                }
-
-            }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        myMenu = menu;
+        return true;
+    }
 
-    public void loginUser(View v){
-        //Toast.makeText(this,"Login clicked..", Toast.LENGTH_SHORT).show();
-        //DB Logic needs to be implement
-        /*String table, String[] columns, String selection, String[] selectionArgs,
-         String groupBy, String having, String orderBy */
-        m_etUNameLogin = findViewById(R.id.etUName);
-        m_etPwdLogin   = findViewById(R.id.etPwdLogin);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-      /*  Cursor c= dBase.query("tCustomer",null,
-                "id_phone=? and password=?",
-                new String[]{m_etUNameLogin.getText().toString(),m_etPwdLogin.getText().toString()},
-                null,null,
-                null); */
-        dBase=openOrCreateDatabase("RHub",MODE_PRIVATE,null);
-        Cursor c= dBase.query("tCustomer",null,
-                null,
-                null,
-                null,null,
-                null);
-        boolean bSuccess = false;
-        while (c.moveToNext()){
-            String sUnameDB = c.getInt(0) + "";
-            String sPwdDB   = c.getString(3);
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
 
-            if(m_etUNameLogin.getText().toString().equals(sUnameDB) && m_etPwdLogin.getText().toString().equals(sPwdDB)){
-                Toast.makeText(this,"Login Successful", Toast.LENGTH_SHORT).show();
-                bSuccess = true;
-                break;
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_activity) {
+            // Handle the My Activity
+            getFragmentManager().beginTransaction().replace(R.id.frag, new UserProfilePage()).commit();
+        } else if (id == R.id.nav_home) {
+            getFragmentManager().beginTransaction().replace(R.id.frag, new HomeFragment()).commit();
+
+        } else if (id == R.id.nav_addcustomer) {
+            if( (sfUname == null) || (sfPwd == null) ) {
+                getFragmentManager().beginTransaction().replace(R.id.frag, new LoginFragment()).commit();
+            }else{
+                getFragmentManager().beginTransaction().replace(R.id.frag, new AddUser()).commit();
             }
+
+        }else if (id == R.id.nav_login){
+            if(item.getTitle().equals("Login")) {
+                getFragmentManager().beginTransaction().replace(R.id.frag, new LoginFragment()).commit();
+                item.setTitle("Logout");
+            }else {
+                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(userName, null);
+                editor.putString(passWord, null);
+                editor.commit();
+
+                getFragmentManager().beginTransaction().replace(R.id.frag, new HomeFragment()).commit();
+                item.setTitle("Login");
+            }
+
+
+        }else if (id == R.id.nav_feedback){
+
+        }else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
         }
 
-        if(!bSuccess){
-            Toast.makeText(this,"Login Failed", Toast.LENGTH_SHORT).show();
-        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
-
-    public void sendOTP(View v){
-        Toast.makeText(this,"Send OTP clicked..", Toast.LENGTH_SHORT).show();
-        //DB Logic needs to be implement
-
-    }
-
-    public void submitOTP(View v){
-        Toast.makeText(this,"submit OTP clicked..", Toast.LENGTH_SHORT).show();
-        //DB Logic needs to be implement
-        callFragment(new ResetPwdFragment());
-
-    }
-
-    public void resetPWD(View v){
-        Toast.makeText(this,"reset PWD clicked..", Toast.LENGTH_SHORT).show();
-        //DB Logic needs to be implement
-
-    }
-
-    public void forgotPwdUser(View v){
-        Toast.makeText(this,"ForGot PWD clicked..", Toast.LENGTH_SHORT).show();
-        callFragment(new ForgotPwdFragment());
-    }
-
 }
